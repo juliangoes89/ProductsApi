@@ -1,0 +1,6 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+src/database/data/products.json
+tests/tmp/
