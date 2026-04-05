@@ -97,50 +97,56 @@ describe('Products API (Cosmos mocked, offline)', () => {
   });
 
   it('GET /api/products should return empty array initially', async () => {
+    //Act
     const res = await request(app).get('/api/products');
+    //Assert
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
   });
 
   it('POST /api/products should create a product', async () => {
+    //Setup
     const payload = {
       name: 'Keyboard',
       description: 'Mechanical keyboard',
       price: 49.99,
       stock: 10,
     };
-
+    //Act
     const res = await request(app).post('/api/products').send(payload);
-
+    //Assert
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject(payload);
     expect(res.body.id).toBe(1);
   });
 
   it('GET /api/products/:id should return the product', async () => {
+    //Setup
     const createRes = await request(app).post('/api/products').send({
       name: 'Mouse',
       description: 'Wireless mouse',
       price: 19.99,
       stock: 25,
     });
-
+    //Act
     const id = createRes.body.id;
     const res = await request(app).get(`/api/products/${id}`);
-
+    //Assert
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(id);
     expect(res.body.name).toBe('Mouse');
   });
 
   it('PUT /api/products/:id should update the product', async () => {
+    //Setup
     const createRes = await request(app).post('/api/products').send({
       name: 'Monitor',
       description: '24 inch',
       price: 149.99,
       stock: 5,
     });
-
+    
+    //Act
     const id = createRes.body.id;
 
     const updateRes = await request(app).put(`/api/products/${id}`).send({
@@ -149,7 +155,8 @@ describe('Products API (Cosmos mocked, offline)', () => {
       price: 179.99,
       stock: 7,
     });
-
+    
+    //Assert
     expect(updateRes.status).toBe(200);
     expect(updateRes.body).toMatchObject({
       id,
@@ -161,6 +168,7 @@ describe('Products API (Cosmos mocked, offline)', () => {
   });
 
   it('DELETE /api/products/:id should delete the product', async () => {
+    //Setup
     const createRes = await request(app).post('/api/products').send({
       name: 'Headset',
       description: 'Noise cancelling',
@@ -168,12 +176,16 @@ describe('Products API (Cosmos mocked, offline)', () => {
       stock: 8,
     });
 
+    //Act
     const id = createRes.body.id;
 
     const deleteRes = await request(app).delete(`/api/products/${id}`);
+    //Assert
     expect(deleteRes.status).toBe(204);
-
+    
+    //Act - try to get the deleted product
     const getRes = await request(app).get(`/api/products/${id}`);
+    //Assert
     expect(getRes.status).toBe(404);
   });
 });
